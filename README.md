@@ -1,2 +1,2 @@
-# apikey_auth
+# Api Key Auth
 Api key authentication provider - Drupal
