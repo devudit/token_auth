@@ -1,2 +1,2 @@
-# Api Key Auth
+# Token Auth
 Api key authentication provider - Drupal
