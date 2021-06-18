@@ -1,0 +1,7 @@
+name: 'Token Authentication Provider'
+type: module
+description: 'A simple token based authentication provider for drupal.'
+
+core_version_requirement: ^8.8 || ^9
+
+package: Web services

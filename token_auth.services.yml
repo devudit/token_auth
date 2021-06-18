@@ -1,0 +1,6 @@
+services:
+  token_auth.authentication.auth_token:
+    class: Drupal\token_auth\Authentication\TokenAuthenticationProvider
+    arguments: [ '@entity_type.manager' ]
+    tags:
+      - { name: authentication_provider, provider_id: 'token_auth', priority: 100 }

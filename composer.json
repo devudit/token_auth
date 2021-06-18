@@ -1,0 +1,10 @@
+{
+    "name": "drupal/token_auth",
+    "description": "A simple token based authentication provider for drupal.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "minimum-stability": "dev",
+    "require": {
+        "drupal/core": "^8.8 || ^9"
+    }
+}

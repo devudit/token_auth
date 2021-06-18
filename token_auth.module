@@ -1,0 +1,71 @@
+<?php
+
+use Drupal\Component\Utility\Crypt;
+use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\user\Entity\User;
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_entity_base_field_info().
+ *
+ * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+ *
+ * @return array
+ */
+function token_auth_entity_base_field_info(EntityTypeInterface $entity_type) {
+  if ($entity_type->id() == 'user') {
+    $fields = [];
+    $fields['auth_token'] = BaseFieldDefinition::create('string')
+      ->setLabel(t('Auth Token'))
+      ->setRevisionable(FALSE)
+      ->setTranslatable(FALSE);
+    return $fields;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * @param $form
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ * @param $form_id
+ *
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function token_auth_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $user = \Drupal::routeMatch()->getParameter('user');
+  if ($user) {
+    $auth_token = token_auth_get_user_token($user->id());
+
+    $form['auth_token_wrap'] = [
+      '#type' => 'fieldset',
+      '#title' => 'API',
+    ];
+    $form['auth_token_wrap']['auth_token'] = [
+      '#type' => 'item',
+      '#title' => 'Auth Token',
+      '#markup' => $auth_token,
+    ];
+  }
+}
+
+/**
+ * Generate and return user token.
+ *
+ * @param $uid
+ *
+ * @return string
+ * @throws \Drupal\Core\Entity\EntityStorageException
+ */
+function token_auth_get_user_token($uid) {
+  $user = User::load($uid);
+
+  if ($user->auth_token->isEmpty()) {
+    $user->auth_token->value = Crypt::randomBytesBase64(16);
+    $user->save();
+  }
+
+  return $user->auth_token->value;
+}
+
